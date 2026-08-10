@@ -105,7 +105,6 @@ function App() {
             showProgress={true}
             progressColor="#10b981"
             position="bottom-right"
-            style={{ position: "absolute", bottom: "1rem", right: "1rem" }}
           />
         </div>
       </section>

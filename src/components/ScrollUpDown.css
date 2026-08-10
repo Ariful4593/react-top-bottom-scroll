@@ -36,6 +36,29 @@
   transform: translateX(-50%);
 }
 
+/* Container Mode Sticky Positioning */
+.react-scroll-up-down-btn--container {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 100;
+  margin-top: -48px;
+}
+
+.react-scroll-up-down-btn--container-bottom-right {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.react-scroll-up-down-btn--container-bottom-left {
+  margin-left: 1rem;
+  margin-right: auto;
+}
+
+.react-scroll-up-down-btn--container-bottom-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .react-scroll-up-down-btn--bottom-center:hover {
   transform: translateX(-50%) scale(1.1);
 }

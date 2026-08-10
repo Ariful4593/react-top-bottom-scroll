@@ -241,7 +241,10 @@ const ScrollUpDown: React.FC<ScrollUpDownProps> = ({
   const handleClick = isDown ? handleClickToBottom : handleClickToTop;
   const strokeOffset = CIRCLE_CIRCUMFERENCE - (scrollProgress / 100) * CIRCLE_CIRCUMFERENCE;
 
-  const positionClass = `react-scroll-up-down-btn--${position}`;
+  const isContainerMode = !!containerRef;
+  const positionClass = isContainerMode
+    ? `react-scroll-up-down-btn--container react-scroll-up-down-btn--container-${position}`
+    : `react-scroll-up-down-btn--${position}`;
   const hiddenClass = autoHide && isIdle ? "react-scroll-up-down-btn--hidden" : "";
   const combinedClassName = `react-scroll-up-down-btn ${positionClass} ${hiddenClass} ${className}`.trim();
 
