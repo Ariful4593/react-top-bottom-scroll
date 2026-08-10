@@ -1,6 +1,6 @@
 {
   "name": "react-top-bottom-scroll",
-  "version": "0.0.22",
+  "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

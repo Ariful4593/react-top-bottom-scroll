@@ -54,6 +54,21 @@ function App() {
 export default App;
 ```
 
+> **Note for Next.js App Router (Next.js 13/14/15+)**:
+> Since `ScrollUpDown` listens to browser scroll events, place `"use client";` at the top of the component file where you import `ScrollUpDown`.
+
+---
+
+### TypeScript Usage & Imported Types
+
+```tsx
+import ScrollUpDown, {
+  type ScrollUpDownProps,
+  type ScrollDirection,
+  type ButtonPosition,
+} from "react-top-bottom-scroll";
+```
+
 ---
 
 ### 2. Circular Scroll Progress Ring
