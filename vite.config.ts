@@ -6,6 +6,7 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
+    target: "es2020",
     minify: "esbuild",
     lib: {
       entry: "src/index.ts",
@@ -16,12 +17,16 @@ export default defineConfig({
     rollupOptions: {
       external: ["react", "react-dom", "react/jsx-runtime"],
       output: {
+        compact: true,
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
         },
       },
     },
+  },
+  esbuild: {
+    legalComments: "none",
   },
   plugins: [
     react(),
