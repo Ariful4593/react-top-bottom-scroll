@@ -66,8 +66,8 @@ describe("ScrollUpDown Component", () => {
   it("renders custom icon using renderIcon callback", () => {
     render(
       <ScrollUpDown
-        renderIcon={(direction) => (
-          <span data-testid="custom-icon">{direction === "down" ? "DOWN" : "UP"}</span>
+        renderIcon={(direction, progress) => (
+          <span data-testid="custom-icon">{direction === "down" ? `DOWN ${progress}%` : "UP"}</span>
         )}
       />
     );
@@ -78,10 +78,11 @@ describe("ScrollUpDown Component", () => {
     expect(icon).toHaveTextContent("DOWN");
   });
 
-  it("calls window.scrollTo top when up button is clicked", () => {
+  it("calls window.scrollTo top when up button is clicked and triggers callback", () => {
     const scrollToSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    const onTopMock = vi.fn();
 
-    render(<ScrollUpDown upTitleMessage="Go Up" />);
+    render(<ScrollUpDown upTitleMessage="Go Up" onScrollToTop={onTopMock} />);
 
     // Scroll down first
     triggerScroll(500);
@@ -94,6 +95,7 @@ describe("ScrollUpDown Component", () => {
     btn.click();
 
     expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+    expect(onTopMock).toHaveBeenCalled();
   });
 
   it("calls scrollIntoView when topRef is provided", () => {
@@ -116,5 +118,40 @@ describe("ScrollUpDown Component", () => {
       block: "start",
       inline: "nearest",
     });
+  });
+
+  it("renders progress ring when showProgress is true", () => {
+    render(<ScrollUpDown showProgress={true} progressColor="#ef4444" />);
+    triggerScroll(500);
+
+    const btn = screen.getByRole("button");
+    const progressRing = btn.querySelector(".react-scroll-up-down-progress-ring");
+    expect(progressRing).toBeInTheDocument();
+  });
+
+  it("applies position class when position prop is set", () => {
+    render(<ScrollUpDown position="bottom-left" />);
+    triggerScroll(200);
+
+    const btn = screen.getByRole("button");
+    expect(btn).toHaveClass("react-scroll-up-down-btn--bottom-left");
+  });
+
+  it("respects custom showAtThreshold", () => {
+    const { container } = render(<ScrollUpDown showAtThreshold={300} />);
+    
+    triggerScroll(150);
+    expect(container.firstChild).toBeNull();
+
+    triggerScroll(350);
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  it("triggers onScrollChange callback", () => {
+    const onScrollChangeMock = vi.fn();
+    render(<ScrollUpDown onScrollChange={onScrollChangeMock} />);
+
+    triggerScroll(420);
+    expect(onScrollChangeMock).toHaveBeenCalledWith("down", expect.any(Number));
   });
 });
