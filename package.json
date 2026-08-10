@@ -19,6 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "node ./node_modules/typescript/lib/tsc.js -p tsconfig.json --emitDeclarationOnly --noEmit false && vite build",
+    "build:demo": "vite build --config vite.demo.config.ts",
     "type-check": "node ./node_modules/typescript/lib/tsc.js --noEmit",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run",
