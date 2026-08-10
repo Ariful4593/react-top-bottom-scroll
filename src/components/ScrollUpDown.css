@@ -13,6 +13,7 @@
   border: none;
   cursor: pointer;
   z-index: 10001;
+  will-change: transform, opacity;
   transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 

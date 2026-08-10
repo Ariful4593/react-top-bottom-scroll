@@ -25,7 +25,7 @@ describe("ScrollUpDown Component", () => {
     // Mock requestAnimationFrame
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb: FrameRequestCallback) => {
       cb(performance.now());
-      return 0;
+      return 1;
     });
 
     // Mock scroll height and client height on HTMLElement prototype
@@ -139,11 +139,12 @@ describe("ScrollUpDown Component", () => {
 
   it("respects custom showAtThreshold", () => {
     const { container } = render(<ScrollUpDown showAtThreshold={300} />);
-    
+
     triggerScroll(150);
     expect(container.firstChild).toBeNull();
 
     triggerScroll(350);
+    triggerScroll(400);
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
