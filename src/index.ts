@@ -1,6 +1,7 @@
 export { default } from "./components/ScrollUpDown";
 export { default as ScrollUpDown } from "./components/ScrollUpDown";
-export { useScrollUpDown, useScrollProgress } from "./hooks/useScrollUpDown";
+export { useScrollUpDown } from "./hooks/useScrollUpDown";
+export { useScrollProgress } from "./hooks/useScrollProgress";
 
 export type {
   ScrollUpDownProps,
@@ -10,6 +11,5 @@ export type {
   DualLayout,
   ProgressBarPosition,
   UseScrollUpDownOptions,
-} from "./components/ScrollUpDown";
-
-export type { UseScrollUpDownReturn } from "./hooks/useScrollUpDown";
+  UseScrollUpDownReturn,
+} from "./types";

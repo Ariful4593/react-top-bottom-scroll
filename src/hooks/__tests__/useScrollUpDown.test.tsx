@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useScrollUpDown, useScrollProgress } from "../useScrollUpDown";
+import { useScrollUpDown, useScrollProgress } from "../index";
 
 describe("useScrollUpDown & useScrollProgress Hooks", () => {
   const triggerScroll = (scrollY: number) => {
