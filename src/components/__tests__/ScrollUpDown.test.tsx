@@ -22,13 +22,11 @@ describe("ScrollUpDown Component", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
 
-    // Mock requestAnimationFrame
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb: FrameRequestCallback) => {
       cb(performance.now());
       return 1;
     });
 
-    // Mock scroll height and client height on HTMLElement prototype
     Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
       configurable: true,
       get: () => 5000,
@@ -38,17 +36,16 @@ describe("ScrollUpDown Component", () => {
       get: () => 800,
     });
 
-    // Default scroll Y
     Object.defineProperty(window, "scrollY", { value: 0, writable: true, configurable: true });
     Object.defineProperty(window, "innerHeight", { value: 800, writable: true, configurable: true });
   });
 
   it("does not render when not scrolled", () => {
     const { container } = render(<ScrollUpDown />);
-    expect(container.firstChild).toBeNull();
+    expect(container.querySelector("button")).toBeNull();
   });
 
-  it("renders scroll down button when scrolling down", () => {
+  it("renders scroll down button when scrolling down in dynamic mode", () => {
     render(
       <ScrollUpDown
         downTitleMessage="Scroll to end"
@@ -141,7 +138,7 @@ describe("ScrollUpDown Component", () => {
     const { container } = render(<ScrollUpDown showAtThreshold={300} />);
 
     triggerScroll(150);
-    expect(container.firstChild).toBeNull();
+    expect(container.querySelector("button")).toBeNull();
 
     triggerScroll(350);
     triggerScroll(400);
@@ -154,5 +151,70 @@ describe("ScrollUpDown Component", () => {
 
     triggerScroll(420);
     expect(onScrollChangeMock).toHaveBeenCalledWith("down", expect.any(Number));
+  });
+
+  /* New Tests for Multi-mode & Reading Progress Bar */
+
+  it("renders reading progress bar when showProgressBar is true", () => {
+    const { container } = render(
+      <ScrollUpDown
+        showProgressBar={true}
+        progressBarPosition="top"
+        progressBarColor="#10b981"
+      />
+    );
+
+    const bar = container.querySelector(".react-scroll-reading-bar--top");
+    expect(bar).toBeInTheDocument();
+
+    const indicator = container.querySelector(".react-scroll-reading-bar-indicator");
+    expect(indicator).toHaveStyle({ background: "#10b981" });
+  });
+
+  it("renders both buttons when mode is dual", () => {
+    render(
+      <ScrollUpDown
+        mode="dual"
+        dualLayout="vertical"
+        upTitleMessage="Go to top"
+        downTitleMessage="Go to bottom"
+      />
+    );
+
+    triggerScroll(500);
+
+    const topBtn = screen.getByRole("button", { name: "Go to top" });
+    const bottomBtn = screen.getByRole("button", { name: "Go to bottom" });
+
+    expect(topBtn).toBeInTheDocument();
+    expect(bottomBtn).toBeInTheDocument();
+  });
+
+  it("renders only up button when mode is up-only", () => {
+    render(
+      <ScrollUpDown
+        mode="up-only"
+        upTitleMessage="Only Top"
+      />
+    );
+
+    triggerScroll(500);
+
+    const btn = screen.getByRole("button", { name: "Only Top" });
+    expect(btn).toBeInTheDocument();
+  });
+
+  it("renders only down button when mode is down-only", () => {
+    render(
+      <ScrollUpDown
+        mode="down-only"
+        downTitleMessage="Only Bottom"
+      />
+    );
+
+    triggerScroll(100);
+
+    const btn = screen.getByRole("button", { name: "Only Bottom" });
+    expect(btn).toBeInTheDocument();
   });
 });

@@ -1,3 +1,4 @@
+/* Base Button Styles */
 .react-scroll-up-down-btn {
   position: fixed;
   bottom: 2rem;
@@ -14,7 +15,8 @@
   cursor: pointer;
   z-index: 10001;
   will-change: transform, opacity;
-  transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .react-scroll-up-down-btn--bottom-right {
@@ -59,11 +61,11 @@
   margin-right: auto;
 }
 
-.react-scroll-up-down-btn--bottom-center:hover {
+.react-scroll-up-down-btn--bottom-center:hover:not(:disabled) {
   transform: translateX(-50%) scale(1.1);
 }
 
-.react-scroll-up-down-btn:hover {
+.react-scroll-up-down-btn:hover:not(:disabled) {
   transform: scale(1.1);
 }
 
@@ -78,6 +80,13 @@
   visibility: hidden;
 }
 
+.react-scroll-up-down-btn--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Circular Progress Ring */
 .react-scroll-up-down-progress-ring {
   position: absolute;
   top: -2px;
@@ -86,4 +95,110 @@
   height: 44px;
   pointer-events: none;
   transform: rotate(-90deg);
+}
+
+/* Dual Button Group */
+.react-scroll-up-down-dual {
+  position: fixed;
+  display: flex;
+  z-index: 10001;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.react-scroll-up-down-dual--vertical {
+  flex-direction: column;
+}
+
+.react-scroll-up-down-dual--horizontal {
+  flex-direction: row;
+}
+
+.react-scroll-up-down-dual--bottom-right {
+  bottom: 2rem;
+  right: 2rem;
+  left: auto;
+}
+
+.react-scroll-up-down-dual--bottom-left {
+  bottom: 2rem;
+  left: 2rem;
+  right: auto;
+}
+
+.react-scroll-up-down-dual--bottom-center {
+  bottom: 2rem;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.react-scroll-up-down-dual .react-scroll-up-down-btn--dual {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+}
+
+/* Dual Container Mode */
+.react-scroll-up-down-dual--container {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 100;
+  margin-top: -96px;
+}
+
+.react-scroll-up-down-dual--container-bottom-right {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.react-scroll-up-down-dual--container-bottom-left {
+  margin-left: 1rem;
+  margin-right: auto;
+}
+
+.react-scroll-up-down-dual--container-bottom-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Reading Progress Bar */
+.react-scroll-reading-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.react-scroll-reading-bar--top {
+  top: 0;
+  bottom: auto;
+}
+
+.react-scroll-reading-bar--bottom {
+  bottom: 0;
+  top: auto;
+}
+
+.react-scroll-reading-bar--container {
+  position: sticky;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.react-scroll-reading-bar--container.react-scroll-reading-bar--top {
+  top: 0;
+}
+
+.react-scroll-reading-bar--container.react-scroll-reading-bar--bottom {
+  bottom: 0;
+}
+
+.react-scroll-reading-bar-indicator {
+  height: 100%;
+  transition: width 0.1s ease-out;
+  will-change: width;
 }

@@ -1,6 +1,6 @@
 # react-top-bottom-scroll
 
-> A lightweight, highly customizable, accessible, high-performance scroll-to-top and scroll-to-bottom button component for React (React 16.8+, 17, 18, 19+).
+> A lightweight, highly customizable, accessible, high-performance scroll-to-top and scroll-to-bottom button component and headless React hooks (React 16.8+, 17, 18, 19+).
 
 [![npm version](https://img.shields.io/npm/v/react-top-bottom-scroll.svg)](https://www.npmjs.com/package/react-top-bottom-scroll)
 [![license](https://img.shields.io/npm/l/react-top-bottom-scroll.svg)](https://github.com/Ariful4593/react-top-bottom-scroll/blob/main/LICENSE)
@@ -12,11 +12,13 @@
 
 - **Universal React Compatibility**: Fully supports React 16.8+, 17, 18, 19 and future versions.
 - **TypeScript First**: Ships with complete TypeScript definitions.
-- **Circular Progress Ring**: Optional SVG progress ring showing 0–100% scroll progress.
+- **Multiple Modes**: Support for `dynamic` (smart direction switcher), `dual` (both Up & Down buttons), `up-only`, and `down-only`.
+- **Top / Bottom Reading Progress Bar**: Optional linear reading progress bar across the screen or container.
+- **Circular Progress Ring**: Optional SVG circular progress ring showing 0–100% scroll progress.
+- **Headless React Hooks**: Exported `useScrollUpDown` and `useScrollProgress` hooks for complete UI and Tailwind CSS customization.
 - **Custom Container Support**: Works with `window` as well as any scrollable `<div>` container via `containerRef`.
 - **Auto-Hide Inactivity**: Automatically fades out button when scrolling stops.
-- **Threshold Control**: Configure scroll distance before button appears (`showAtThreshold`).
-- **Flexible Positioning**: Position presets (`bottom-right`, `bottom-left`, `bottom-center`).
+- **Flexible Positioning & Layout**: Position presets (`bottom-right`, `bottom-left`, `bottom-center`) and dual layouts (`vertical`, `horizontal`).
 - **High Performance**: Passive scroll listeners to prevent scroll lag and layout thrashing.
 - **Accessible (`a11y`)**: Built using `<button type="button">` with proper `aria-label` attributes.
 
@@ -66,35 +68,76 @@ export default App;
 
 ```tsx
 import ScrollUpDown, {
+  useScrollUpDown,
+  useScrollProgress,
   type ScrollUpDownProps,
   type ScrollDirection,
   type ButtonPosition,
+  type ScrollMode,
+  type DualLayout,
+  type ProgressBarPosition,
+  type UseScrollUpDownOptions,
+  type UseScrollUpDownReturn,
 } from "react-top-bottom-scroll";
 ```
 
 ---
 
-### 2. Circular Scroll Progress Ring
+### 2. Multi-Mode Support (`dynamic`, `dual`, `up-only`, `down-only`)
 
+#### Dual Buttons Stack (Both Up & Down):
 ```tsx
-import React from "react";
-import ScrollUpDown from "react-top-bottom-scroll";
+<ScrollUpDown
+  mode="dual"
+  dualLayout="vertical" // "vertical" | "horizontal"
+  dualGap={8}
+  showProgress={true}
+  progressColor="#3b82f6"
+/>
+```
 
-function App() {
-  return (
-    <ScrollUpDown
-      showProgress={true}
-      progressColor="#3b82f6"
-      progressTrackColor="rgba(255, 255, 255, 0.2)"
-      progressStrokeWidth={3}
-    />
-  );
-}
+#### Up-Only (Classic Scroll to Top):
+```tsx
+<ScrollUpDown mode="up-only" position="bottom-right" />
+```
+
+#### Down-Only (Scroll to Bottom / Comments):
+```tsx
+<ScrollUpDown mode="down-only" position="bottom-right" />
 ```
 
 ---
 
-### 3. Custom Scroll Container (`containerRef`)
+### 3. Horizontal Reading Progress Bar
+
+Add a sleek linear reading progress bar across the top or bottom of the viewport:
+
+```tsx
+<ScrollUpDown
+  showProgressBar={true}
+  progressBarPosition="top" // "top" | "bottom"
+  progressBarHeight={4}     // or "4px"
+  progressBarColor="linear-gradient(90deg, #3b82f6, #8b5cf6)"
+  progressBarTrackColor="transparent"
+/>
+```
+
+---
+
+### 4. Circular Scroll Progress Ring
+
+```tsx
+<ScrollUpDown
+  showProgress={true}
+  progressColor="#3b82f6"
+  progressTrackColor="rgba(255, 255, 255, 0.2)"
+  progressStrokeWidth={3}
+/>
+```
+
+---
+
+### 5. Custom Scroll Container (`containerRef`)
 
 Track scroll progress inside a scrollable `<div>` modal or sidebar instead of `window`:
 
@@ -106,9 +149,14 @@ function ScrollableModal() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={containerRef} style={{ height: "400px", overflowY: "auto" }}>
+    <div ref={containerRef} style={{ height: "400px", overflowY: "auto", position: "relative" }}>
       {/* ... Long Modal Content ... */}
-      <ScrollUpDown containerRef={containerRef} position="bottom-right" />
+      <ScrollUpDown
+        containerRef={containerRef}
+        mode="dual"
+        dualLayout="horizontal"
+        showProgressBar={true}
+      />
     </div>
   );
 }
@@ -116,43 +164,57 @@ function ScrollableModal() {
 
 ---
 
-### 4. Auto-Hide & Custom Positioning
+### 6. Headless React Hook (`useScrollUpDown` & `useScrollProgress`)
+
+Create completely custom UI with Tailwind CSS or any design system without using default button styles:
 
 ```tsx
 import React from "react";
-import ScrollUpDown from "react-top-bottom-scroll";
+import { useScrollUpDown } from "react-top-bottom-scroll";
 
-function App() {
+function CustomFloatingPill() {
+  const {
+    scrollProgress,
+    scrollDirection,
+    isAtTop,
+    isAtBottom,
+    scrollToTop,
+    scrollToBottom,
+  } = useScrollUpDown({ showAtThreshold: 20 });
+
   return (
-    <ScrollUpDown
-      position="bottom-left"
-      autoHide={true}
-      autoHideDelay={3000}
-      showAtThreshold={200}
-    />
+    <div className="fixed bottom-6 right-6 bg-slate-900 text-white rounded-full px-4 py-2 flex items-center gap-3 shadow-xl">
+      <span>{Math.round(scrollProgress)}%</span>
+      <button
+        onClick={() => scrollToTop()}
+        disabled={isAtTop}
+        className="px-2 py-1 bg-blue-600 rounded disabled:opacity-40"
+      >
+        ▲
+      </button>
+      <button
+        onClick={() => scrollToBottom()}
+        disabled={isAtBottom}
+        className="px-2 py-1 bg-blue-600 rounded disabled:opacity-40"
+      >
+        ▼
+      </button>
+    </div>
   );
 }
 ```
 
 ---
 
-### 5. Callbacks & Custom Icons
+### 7. Auto-Hide & Custom Positioning
 
 ```tsx
-import React from "react";
-import ScrollUpDown from "react-top-bottom-scroll";
-
-function App() {
-  return (
-    <ScrollUpDown
-      onScrollToTop={() => console.log("User scrolled to top!")}
-      onScrollChange={(dir, progress) => console.log(`Scrolling ${dir}, ${progress}%`)}
-      renderIcon={(direction, progress) => (
-        <span>{direction === "up" ? `⬆️ ${progress}%` : `⬇️ ${progress}%`}</span>
-      )}
-    />
-  );
-}
+<ScrollUpDown
+  position="bottom-left"
+  autoHide={true}
+  autoHideDelay={3000}
+  showAtThreshold={200}
+/>
 ```
 
 ---
@@ -161,6 +223,15 @@ function App() {
 
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
+| `mode` | `"dynamic" \| "dual" \| "up-only" \| "down-only"` | `"dynamic"` | Operation mode: smart direction switcher, dual buttons, up-only, or down-only. |
+| `dualLayout` | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction when `mode="dual"`. |
+| `dualGap` | `number \| string` | `8` | Gap spacing between dual buttons. |
+| `showProgressBar` | `boolean` | `false` | Enables linear reading progress bar across the screen/container. |
+| `progressBarPosition` | `"top" \| "bottom"` | `"top"` | Position of the reading progress bar. |
+| `progressBarHeight` | `number \| string` | `3` | Height in px or CSS value for reading progress bar. |
+| `progressBarColor` | `string` | `"#3b82f6"` | Color or CSS gradient background for reading progress bar. |
+| `progressBarTrackColor` | `string` | `"transparent"` | Background track color for reading progress bar. |
+| `progressBarZIndex` | `number` | `10002` | Z-index for reading progress bar. |
 | `bottomRef` | `React.RefObject<HTMLElement>` | `null` | Target element to scroll down to. |
 | `topRef` | `React.RefObject<HTMLElement>` | `null` | Target element to scroll up to. |
 | `containerRef` | `React.RefObject<HTMLElement>` | `null` | Custom scrollable `<div>` container ref. |

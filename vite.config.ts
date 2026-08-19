@@ -18,6 +18,7 @@ export default defineConfig({
       external: ["react", "react-dom", "react/jsx-runtime"],
       output: {
         compact: true,
+        exports: "named",
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
